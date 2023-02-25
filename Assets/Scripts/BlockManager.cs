@@ -6,12 +6,13 @@ public class BlockManager : MonoBehaviour
 {
     float prevTime;
     float fallTime = 1f;
-
-
+    public float moveSpeed = 1f;
+    private Camera mainCamera;
 
     // Start is called before the first frame update
     void Start()
     {
+        mainCamera = Camera.main;
         ButtonInputs.instance.SetActiveBlock(gameObject, this);
         fallTime = GameManager.instance.ReadFallSpeed();
         if(!CheckValidMove())
@@ -52,30 +53,89 @@ public class BlockManager : MonoBehaviour
             prevTime = Time.time;
         }
 
-
         // Keyboard Input
 
         if (GameManager.instance.ReadIsGameOver())
             return;
+
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        Vector3 cameraForward = mainCamera.transform.forward;
+        Vector3 cameraUp = mainCamera.transform.up;
+        Vector3 cameraRight = mainCamera.transform.right;
+
+        // Calculate the left vector by taking the cross product of the camera's forward and up vectors
+        //Vector3 cameraLeft = Vector3.Cross(cameraUp, cameraForward).normalized;
+        Vector3 projectedForward = Vector3.ProjectOnPlane(cameraForward, Vector3.up).normalized;
+        Vector3 cameraLeft = Vector3.Cross(cameraUp, projectedForward).normalized;
+
+
         // Movement
         if (Input.GetKeyDown(KeyCode.A))
         {
-            SetInput(Vector3.left);
+            //SetInput(Vector3.left);
+            // Calculate the movement direction vector by multiplying the camera's left vector by the movement input value
+            Vector3 moveDirection = cameraLeft * horizontal + cameraUp * vertical;
+
+            moveDirection = Vector3.ProjectOnPlane(moveDirection, Vector3.up);
+
+            moveDirection = new Vector3(Mathf.Round(moveDirection.x), Mathf.Round(moveDirection.y), Mathf.Round(moveDirection.z));
+
+            SetInputRelativeToCamera(moveDirection);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            SetInput(Vector3.right);
+            //SetInput(Vector3.right);
+            Vector3 moveDirection = cameraLeft * horizontal + projectedForward * vertical;
+
+            // Clamp the movement direction vector to be either purely horizontal or purely vertical
+            Vector3 cameraForwardPlane = Vector3.Cross(cameraLeft, Vector3.up).normalized;
+            moveDirection = Vector3.ProjectOnPlane(moveDirection, cameraForwardPlane);
+            moveDirection.y = 0f;
+            moveDirection = new Vector3(Mathf.Round(moveDirection.x), Mathf.Round(moveDirection.y), Mathf.Round(moveDirection.z));
+
+            SetInputRelativeToCamera(moveDirection);
         }
 
         if (Input.GetKeyDown(KeyCode.W))
         {
-            SetInput(Vector3.forward);
+            //SetInput(Vector3.forward);
+
+            Vector3 moveDirection = cameraForward * horizontal + projectedForward * vertical;
+
+            // Clamp the movement direction vector to be either purely horizontal or purely vertical
+            Vector3 cameraForwardPlane = Vector3.Cross(cameraForward, Vector3.up).normalized;
+            moveDirection = Vector3.ProjectOnPlane(moveDirection, cameraForwardPlane);
+            //moveDirection.y = 0f;
+            moveDirection = new Vector3(Mathf.Round(moveDirection.x), Mathf.Round(moveDirection.y), Mathf.Round(moveDirection.z));
+
+            SetInputRelativeToCamera(moveDirection);
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            SetInput(Vector3.back);
+            //SetInput(Vector3.back);
+            Vector3 moveDirection = cameraForward * horizontal + projectedForward * vertical;
+
+            // Clamp the movement direction vector to be either purely horizontal or purely vertical
+            Vector3 cameraForwardPlane = Vector3.Cross(cameraForward, Vector3.up).normalized;
+            moveDirection = Vector3.ProjectOnPlane(moveDirection, cameraForwardPlane);
+            //moveDirection.y = 0f;
+            moveDirection = new Vector3(Mathf.Round(moveDirection.x), Mathf.Round(moveDirection.y), Mathf.Round(moveDirection.z));
+
+            SetInputRelativeToCamera(moveDirection);
+        }
+
+        if (Input.GetKey(KeyCode.R))
+        {
+            fallTime = fallTime * .98f;
+            GameManager.instance.SetScore(1);
+        }
+        if (Input.GetKeyUp(KeyCode.T) && Input.GetKeyUp(KeyCode.Space))
+        {
+            fallTime = GameManager.instance.ReadFallSpeed();
         }
 
         // Rotation
@@ -103,6 +163,22 @@ public class BlockManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             SetSpeed();
+            //LandImmediately();
+            GameManager.instance.SetScore(50);
+        }
+    }
+
+    public void SetInputRelativeToCamera(Vector3 direction)
+    {
+        transform.position += direction;
+        if (!CheckValidMove())
+        {
+            transform.position -= direction;
+        }
+
+        else
+        {
+            Playfield.instance.UpdateGrid(this);
         }
     }
 
@@ -133,6 +209,7 @@ public class BlockManager : MonoBehaviour
         }
     }
 
+   
     bool CheckValidMove()
     {
         foreach(Transform child in transform)
@@ -156,8 +233,39 @@ public class BlockManager : MonoBehaviour
         return true;
     }
 
+
     public void SetSpeed()
     {
-        fallTime = 0.1f;
+        fallTime = 0.005f;
     }
+    
+    public void LandImmediately()
+    {
+        // Move the piece down until it hits the bottom or another piece
+        while (CheckValidMove())
+        {
+            transform.position += Vector3.down;
+        
+
+        }
+
+        transform.position += Vector3.up; // Move the piece back up one unit
+
+        // Delete layer if possible
+        //Playfield.instance.DeleteLayer();
+        //Playfield.instance.UpdateGrid(this);
+        //enabled = false;
+        
+        
+        // Create new block
+        if (!GameManager.instance.ReadIsGameOver())
+        {
+            //Playfield.instance.UpdateGrid(this);
+            //Playfield.instance.DeleteLayer();
+            //Playfield.instance.UpdateGrid(this);
+            //Playfield.instance.SpawnNewBlock();
+        }
+
+    }
+    
 }
