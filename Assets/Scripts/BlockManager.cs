@@ -6,6 +6,7 @@ public class BlockManager : MonoBehaviour
 {
     public AudioClip moveSound;
     public AudioClip dropSound;
+    public AudioClip rotateSound;
     private AudioSource movePiece;
     public Material emissionMaterial;
     public Color emissionColor;
@@ -16,6 +17,14 @@ public class BlockManager : MonoBehaviour
     private Camera mainCamera;
 
     // Start is called before the first frame update
+    private void Awake()
+    {
+        if (!CheckValidMove())
+        {
+            GameManager.instance.SetIsGameOver();
+        }
+    }
+
     void Start()
     {
         movePiece = GameObject.FindGameObjectWithTag("MovePiece").GetComponent<AudioSource>();
@@ -152,6 +161,31 @@ public class BlockManager : MonoBehaviour
 
         // Rotation
 
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+
+            SetRotationInput(new Vector3(0, 90, 0));
+            movePiece.PlayOneShot(rotateSound);
+        }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+
+            //transform.rotation *= Quaternion.AngleAxis(90f, new Vector3(cameraUp.x, 0, 0));
+            //SetRotationInput(new Vector3(-90, 0, 0));
+            //transform.Rotate(cameraUp, rotationSpeed * Time.deltaTime);
+            //transform.Rotate(Vector3.forward, 90f);
+            SetRotationInput(new Vector3(90, 0, 0));
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+
+            SetRotationInput(new Vector3(0, 0, 90));
+
+        }
+
+        
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             SetRotationInput(new Vector3(90,0,0));
@@ -171,6 +205,9 @@ public class BlockManager : MonoBehaviour
         {
             SetRotationInput(new Vector3(0, 0, -90));
         }
+        
+
+        // Land
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -222,7 +259,6 @@ public class BlockManager : MonoBehaviour
         }
     }
 
-   
     bool CheckValidMove()
     {
         foreach(Transform child in transform)

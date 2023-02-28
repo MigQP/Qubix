@@ -344,6 +344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSound: {fileID: 8300000, guid: 3b307bf1c3e541e47bcb960f40ae49d0, type: 3}
   dropSound: {fileID: 8300000, guid: 916fe78394944d64eaac404e3df2f6f3, type: 3}
+  rotateSound: {fileID: 8300000, guid: 0a654bd5ac1bcd34d9cad685d67d62b8, type: 3}
   emissionMaterial: {fileID: 0}
   emissionColor: {r: 0, g: 0, b: 0, a: 0}
   moveSpeed: 1
