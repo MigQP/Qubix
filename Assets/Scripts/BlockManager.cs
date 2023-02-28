@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class BlockManager : MonoBehaviour
 {
+    public AudioClip moveSound;
+    public AudioClip dropSound;
+    private AudioSource movePiece;
+    public Material emissionMaterial;
+    public Color emissionColor;
+
     float prevTime;
     float fallTime = 1f;
     public float moveSpeed = 1f;
@@ -12,6 +18,7 @@ public class BlockManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        movePiece = GameObject.FindGameObjectWithTag("MovePiece").GetComponent<AudioSource>();
         mainCamera = Camera.main;
         ButtonInputs.instance.SetActiveBlock(gameObject, this);
         fallTime = GameManager.instance.ReadFallSpeed();
@@ -39,6 +46,7 @@ public class BlockManager : MonoBehaviour
                 // Create New Block
                 if (!GameManager.instance.ReadIsGameOver())
                 {
+
                     Playfield.instance.SpawnNewBlock();
                 }
                 
@@ -83,6 +91,7 @@ public class BlockManager : MonoBehaviour
             moveDirection = new Vector3(Mathf.Round(moveDirection.x), Mathf.Round(moveDirection.y), Mathf.Round(moveDirection.z));
 
             SetInputRelativeToCamera(moveDirection);
+            movePiece.PlayOneShot(moveSound);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -97,6 +106,7 @@ public class BlockManager : MonoBehaviour
             moveDirection = new Vector3(Mathf.Round(moveDirection.x), Mathf.Round(moveDirection.y), Mathf.Round(moveDirection.z));
 
             SetInputRelativeToCamera(moveDirection);
+            movePiece.PlayOneShot(moveSound);
         }
 
         if (Input.GetKeyDown(KeyCode.W))
@@ -112,6 +122,7 @@ public class BlockManager : MonoBehaviour
             moveDirection = new Vector3(Mathf.Round(moveDirection.x), Mathf.Round(moveDirection.y), Mathf.Round(moveDirection.z));
 
             SetInputRelativeToCamera(moveDirection);
+            movePiece.PlayOneShot(moveSound);
         }
 
         if (Input.GetKeyDown(KeyCode.S))
@@ -126,6 +137,7 @@ public class BlockManager : MonoBehaviour
             moveDirection = new Vector3(Mathf.Round(moveDirection.x), Mathf.Round(moveDirection.y), Mathf.Round(moveDirection.z));
 
             SetInputRelativeToCamera(moveDirection);
+            movePiece.PlayOneShot(moveSound);
         }
 
         if (Input.GetKey(KeyCode.R))
@@ -165,6 +177,7 @@ public class BlockManager : MonoBehaviour
             SetSpeed();
             //LandImmediately();
             GameManager.instance.SetScore(50);
+            movePiece.PlayOneShot(dropSound);
         }
     }
 
