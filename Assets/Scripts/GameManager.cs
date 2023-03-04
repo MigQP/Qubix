@@ -128,5 +128,6 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = true;
         UIHandler.instance.SetGameOverWindow();
+        UIHandler.instance.UpdateGameOverUI(score);
     }
 }

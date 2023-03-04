@@ -16,6 +16,10 @@ public class BlockManager : MonoBehaviour
     public float moveSpeed = 1f;
     private Camera mainCamera;
 
+    bool canIncrease;
+
+    int maxDescentScore = 50;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -64,7 +68,12 @@ public class BlockManager : MonoBehaviour
             {
                 // Update the grid 
                 Playfield.instance.UpdateGrid(this);
+                if (canIncrease)
+                {    
+                    GameManager.instance.SetScore(1);
+                }
 
+                maxDescentScore = maxDescentScore - 5;
             }
 
             prevTime = Time.time;
@@ -151,15 +160,28 @@ public class BlockManager : MonoBehaviour
 
         if (Input.GetKey(KeyCode.R))
         {
-            fallTime = fallTime * .98f;
-            GameManager.instance.SetScore(1);
+            fallTime = fallTime * .99f;
         }
-        if (Input.GetKeyUp(KeyCode.T) && Input.GetKeyUp(KeyCode.Space))
+
+        if (Input.GetKeyDown(KeyCode.R) && !GameManager.instance.ReadIsGameOver())
+        {
+            canIncrease = true;
+
+        }
+        if (Input.GetKeyUp(KeyCode.R) || GameManager.instance.ReadIsGameOver())
+        {
+            canIncrease = false;
+            fallTime = GameManager.instance.ReadFallSpeed();
+        }
+
+        if (Input.GetKeyUp(KeyCode.R) && Input.GetKeyUp(KeyCode.Space))
         {
             fallTime = GameManager.instance.ReadFallSpeed();
         }
 
         // Rotation
+
+        /*
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -205,6 +227,8 @@ public class BlockManager : MonoBehaviour
         {
             SetRotationInput(new Vector3(0, 0, -90));
         }
+
+        */
         
 
         // Land
@@ -213,7 +237,8 @@ public class BlockManager : MonoBehaviour
         {
             SetSpeed();
             //LandImmediately();
-            GameManager.instance.SetScore(50);
+            //GameManager.instance.SetScore(50);
+            GameManager.instance.SetScore(maxDescentScore);
             movePiece.PlayOneShot(dropSound);
         }
     }
@@ -287,7 +312,12 @@ public class BlockManager : MonoBehaviour
     {
         fallTime = 0.005f;
     }
-    
+
+    public void SetSpeed1()
+    {
+        fallTime = GameManager.instance.ReadFallSpeed() * .95f;
+    }
+
     public void LandImmediately()
     {
         // Move the piece down until it hits the bottom or another piece

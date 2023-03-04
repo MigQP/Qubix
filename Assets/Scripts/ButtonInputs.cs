@@ -12,7 +12,7 @@ public class ButtonInputs : MonoBehaviour
     private GameObject activeBlock;
     BlockManager activeTBlock;
 
-    bool isMoveOn = true;
+    bool isMoveOn = false;
 
     void Awake()
     {
@@ -72,31 +72,37 @@ public class ButtonInputs : MonoBehaviour
 
     public void RotateBlock(string rotation)
     {
-        if(activeBlock != null)
+        if(activeBlock != null && Input.GetKey(KeyCode.Space) == false)
         {
             //X Rotation
             if(rotation == "posX")
             {
                 activeTBlock.SetRotationInput(new Vector3(90, 0, 0));
+                
             }
             if (rotation == "negX")
             {
                 activeTBlock.SetRotationInput(new Vector3(-90, 0, 0));
+                
             }
             if (rotation == "posY")
             {
+                
                 activeTBlock.SetRotationInput(new Vector3(0, 90, 0));
             }
             if (rotation == "negY")
             {
+                
                 activeTBlock.SetRotationInput(new Vector3(0, -90, 0));
             }
             if (rotation == "posZ")
             {
+                
                 activeTBlock.SetRotationInput(new Vector3(0, 0, 90));
             }
             if (rotation == "negZ")
             {
+                
                 activeTBlock.SetRotationInput(new Vector3(0, 0, -90));
             }
         }

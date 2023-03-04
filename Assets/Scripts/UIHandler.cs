@@ -11,6 +11,9 @@ public class UIHandler : MonoBehaviour
     public TMP_Text levelText;
     public TMP_Text layersText;
 
+    public TMP_Text scoreNumber_gameOver;
+    public TMP_Text highScoreNumber_gameOver;
+
     public GameObject gameOverWindow;
 
     void Awake()
@@ -28,6 +31,11 @@ public class UIHandler : MonoBehaviour
         scoreNumber.text = score.ToString("D9");
         levelText.text = level.ToString("D2");
         layersText.text = layers.ToString("D9");
+    }
+
+    public void UpdateGameOverUI(int score)
+    {
+        scoreNumber_gameOver.text = score.ToString("D9");
     }
 
     public void SetGameOverWindow()
