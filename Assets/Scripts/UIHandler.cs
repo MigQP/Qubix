@@ -24,6 +24,7 @@ public class UIHandler : MonoBehaviour
     void Start()
     {
         gameOverWindow.SetActive(false);
+        highScoreNumber_gameOver.text = PlayerPrefs.GetInt("HighScore", 0).ToString("D9");
     }
 
     public void UpdateUi(int score, int level, int layers)
@@ -36,6 +37,18 @@ public class UIHandler : MonoBehaviour
     public void UpdateGameOverUI(int score)
     {
         scoreNumber_gameOver.text = score.ToString("D9");
+
+        if (score > PlayerPrefs.GetInt("HighScore", 0))
+        {
+            PlayerPrefs.SetInt("HighScore", score);
+            highScoreNumber_gameOver.text = score.ToString("D9");
+        }
+
+    }
+
+    public void ResetHighScore()
+    {
+        PlayerPrefs.DeleteKey("HighScore");
     }
 
     public void SetGameOverWindow()

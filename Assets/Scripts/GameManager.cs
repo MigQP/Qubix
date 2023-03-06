@@ -14,11 +14,12 @@ public class GameManager : MonoBehaviour
 
     float fallSpeed;
 
-
+    private AudioManager audioManager;
 
     void Awake()
     {
-        instance = this;    
+        instance = this;
+        audioManager = FindObjectOfType<AudioManager>();
     }
 
     void Start()
@@ -127,7 +128,9 @@ public class GameManager : MonoBehaviour
     public void SetIsGameOver()
     {
         isGameOver = true;
+        audioManager.GameOverFade();
         UIHandler.instance.SetGameOverWindow();
         UIHandler.instance.UpdateGameOverUI(score);
+
     }
 }
