@@ -8,7 +8,6 @@ public class BlockManager : MonoBehaviour
     public AudioClip dropSound;
     public AudioClip rotateSound;
     private AudioSource movePiece;
-    public Material emissionMaterial;
     public Color emissionColor;
 
     float prevTime;
@@ -19,6 +18,8 @@ public class BlockManager : MonoBehaviour
     bool canIncrease;
 
     int maxDescentScore = 50;
+
+    public TrailRenderer[] descentRays;
 
     // Start is called before the first frame update
     private void Awake()
@@ -59,7 +60,10 @@ public class BlockManager : MonoBehaviour
                 // Create New Block
                 if (!GameManager.instance.ReadIsGameOver())
                 {
-
+                    for (int i = 0; i < descentRays.Length; i++)
+                    {
+                        descentRays[i].emitting = false;
+                    }
                     Playfield.instance.SpawnNewBlock();
                 }
                 
@@ -236,6 +240,10 @@ public class BlockManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             SetSpeed();
+            for (int i = 0; i < descentRays.Length; i++)
+            {
+                descentRays[i].emitting = true;
+            }
             //LandImmediately();
             //GameManager.instance.SetScore(50);
             GameManager.instance.SetScore(maxDescentScore);
