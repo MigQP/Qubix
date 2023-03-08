@@ -5,16 +5,21 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     public AudioSource audioLoop;
-
+    public float fadeInTime;
     // Start is called before the first frame update
     void Awake()
     {
-        StartCoroutine(FadeIn(audioLoop, 1.8f));
+        StartCoroutine(FadeIn(audioLoop, fadeInTime));
     }
 
     public void GameOverFade()
     {
         StartCoroutine(FadeOutGameOver(audioLoop, 1f));
+    }
+
+    public void NormalFadeOut()
+    {
+        StartCoroutine(FadeOut(audioLoop, 1f));
     }
 
     public  IEnumerator FadeOut(AudioSource audioSource, float FadeTime)
