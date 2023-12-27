@@ -12,7 +12,7 @@ public class ButtonInputs : MonoBehaviour
     private GameObject activeBlock;
     BlockManager activeTBlock;
 
-    bool isMoveOn = false;
+    public bool isMoveOn = true;
 
     void Awake()
     {
@@ -125,5 +125,6 @@ public class ButtonInputs : MonoBehaviour
     public void SetHighSpeed()
     {
         activeTBlock.SetSpeed();
+        activeTBlock.SetDropScore();
     }
 }

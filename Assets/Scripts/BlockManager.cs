@@ -315,6 +315,11 @@ public class BlockManager : MonoBehaviour
         return true;
     }
 
+    public void SetDropScore ()
+    {
+        GameManager.instance.SetScore(maxDescentScore);
+    }
+
 
     public void SetSpeed()
     {
